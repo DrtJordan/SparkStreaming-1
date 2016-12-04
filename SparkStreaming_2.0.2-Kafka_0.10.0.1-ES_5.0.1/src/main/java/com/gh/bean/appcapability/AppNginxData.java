@@ -6,10 +6,10 @@ import java.util.ArrayList;
 /**
  * Created by GH-GAN on 2016/11/25.
  */
-public class AppRedisData  implements Serializable {
+public class AppNginxData  implements Serializable {
     String container_uuid;
     String environment_id;
-    ArrayList<AppRedisStats> stats;
+    ArrayList<AppNginxStats> stats;
 
     public String getContainer_uuid() {
         return container_uuid;
@@ -27,11 +27,11 @@ public class AppRedisData  implements Serializable {
         this.environment_id = environment_id;
     }
 
-    public ArrayList<AppRedisStats> getStats() {
+    public ArrayList<AppNginxStats> getStats() {
         return stats;
     }
 
-    public void setStats(ArrayList<AppRedisStats> stats) {
+    public void setStats(ArrayList<AppNginxStats> stats) {
         this.stats = stats;
     }
 }

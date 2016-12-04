@@ -11,40 +11,47 @@ import java.net.URLConnection;
  * Created by GH-GAN on 2016/11/28.
  */
 public class HttpUtil {
-    public static void Post(String url,String json){
-        URLConnection conn;
+    public static URLConnection conn = null;
+    public static HttpURLConnection con = null;
+    public static String URL = "http://223.202.32.56:8077/alert/v1/info/receive";
+
+    public static void init(String url){
         try {
             conn = new URL(url).openConnection();
-            HttpURLConnection con = (HttpURLConnection) conn;
+            con = (HttpURLConnection) conn;
             con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             con.setRequestProperty("Accept-Charset", "utf-8");
+            con.setRequestProperty("Connection", "Keep-Alive");
             con.setDoOutput(true);
             con.setDoInput(true);
-
-            //写数据
-            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());;
-            out.write(json);
-            out.flush();
-
-           /* int code = con.getResponseCode();
-            System.out.println("code:"+code);*/
-
-            // 读取返回的数据
-           /* InputStream is = con.getInputStream();
-            int len = 0;
-            byte[] b = new byte[1024];
-            StringBuffer sb = new StringBuffer();
-            while((len = is.read(b)) != -1){
-                String s = new String(b,0,len,"UTF-8");
-                sb.append(s);
-            }
-            System.out.println(sb.toString());*/
-
-            con.disconnect();
-
         } catch (Exception e) {
             e.printStackTrace();
+            con = null;
         }
     }
 
+    static {
+        init(URL);
+    }
+
+    public static void Post(String json){
+            try {
+                if (con == null) init(URL);
+
+                //写数据
+                OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream());;
+                out.write("alert="+json);
+                out.flush();
+
+                int code = con.getResponseCode();
+                System.out.println("code:"+code);
+
+            }catch (Exception e) {
+                e.printStackTrace();
+                con.disconnect();
+                con = null;
+            }
+
+    }
 }

@@ -1,7 +1,9 @@
 package com.gh.yun
 
-import com.gh.bean.{AlertData, AlertDataInfo}
-import com.gh.utils.{HttpUtil, FormatUtil, JsonUtil}
+import java.util
+
+import com.gh.bean.alert.{KeyValue, AlertDataInfo, AlertData}
+import com.gh.utils.{HttpUtil, AlertInfoUtil, JsonUtil}
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.log4j.{Logger, Level}
@@ -27,8 +29,8 @@ object AppMysqlCap {
     }*/
     Logger.getRootLogger.setLevel(Level.WARN)
 
-    val sparkConf = new SparkConf().setAppName("capability-mysql").setMaster("local")
-    val ssc = new StreamingContext(sparkConf, Seconds(5))
+    val sparkConf = new SparkConf().setAppName("capability-mysql").setMaster("local[2]")
+    val ssc = new StreamingContext(sparkConf, Seconds(60))
     ssc.checkpoint("D:\\tmp\\checkpoint")
 
     var brokers ="192.168.100.180:8074,192.168.100.181:8074,192.168.100.182:8074"
@@ -65,12 +67,10 @@ object AppMysqlCap {
         try{
           node = JsonUtil.getJsonNode(line.value())
         }catch {
-          case ex : Exception => {
-            ex.printStackTrace()
-            ("",("",0.0,0.0))
-          }
+          case ex : Exception => ex.printStackTrace()
         }
-
+      node
+    }).filter(_ != null).map(node => {
         val _type = node.get("type").asText()
         val environment_id = node.get("data").get("environment_id").asText()
         val container_uuid = node.get("data").get("container_uuid").asText()
@@ -82,14 +82,12 @@ object AppMysqlCap {
         val max_connections = stats.get("max_connections").asDouble()
 
         (environment_id+"#"+container_uuid+"#"+_type, (timestamp,thread_connected,max_connections) )
-
     })
     datas
   }
 
   def compute(mysql_group : DStream[(String,Iterable[(String,Double,Double)])]): Unit ={
       val warn = mysql_group.map(x => {
-  //        if ("".equals(key)) ("","","",0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0)
           val count = x._2.size
 
           // thread_connected
@@ -110,7 +108,9 @@ object AppMysqlCap {
 
       warn.foreachRDD( record => {
         val alerts = record.map(line => {
-          FormatUtil.toMySqlWarnJson(line._1, line._2, line._3, line._4)
+            val list = new util.ArrayList[KeyValue]()
+            list.add(new KeyValue("thread_connected_max_connections",line._4.toString))
+            AlertInfoUtil.toWarnBean(AlertInfoUtil.SUCCESS,AlertInfoUtil.ALERT_TYPE_M,AlertInfoUtil.ALERT_DIM_A,line._1, line._2, line._3, list)
         })
         val collect = alerts.collect()
         if (collect.size > 0)  httpPost(collect)
@@ -119,12 +119,10 @@ object AppMysqlCap {
   }
 
   //告警
-  def httpPost(alerts : Array[String]): Unit ={
-    val ad = new AlertData()
-    ad.setAlert_data(alerts)
+  def httpPost(alerts : Array[AlertDataInfo]): Unit ={
+    val ad = new AlertData().setAlert_data(alerts)
     var json = JsonUtil.formatJson(ad)
-
-//    HttpUtil.Post("",json)
+    HttpUtil.Post(json)
     println(json)
   }
 

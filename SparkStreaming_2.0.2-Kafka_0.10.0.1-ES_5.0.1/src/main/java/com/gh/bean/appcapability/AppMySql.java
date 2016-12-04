@@ -1,9 +1,11 @@
 package com.gh.bean.appcapability;
 
+import java.io.Serializable;
+
 /**
  * Created by GH-GAN on 2016/11/25.
  */
-public class AppMySql{
+public class AppMySql implements Serializable {
     String type;
     AppMySqlData data;
 

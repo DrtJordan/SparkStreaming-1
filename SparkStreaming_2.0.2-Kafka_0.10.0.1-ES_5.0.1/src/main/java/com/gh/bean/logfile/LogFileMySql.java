@@ -5,9 +5,9 @@ import java.io.Serializable;
 /**
  * Created by GH-GAN on 2016/11/24.
  */
-public class LogFileContainer  implements Serializable {
+public class LogFileMySql  implements Serializable {
     String type;
-    DataContainer data;
+    DataMySql data;
 
     public String getType() {
         return type;
@@ -17,13 +17,11 @@ public class LogFileContainer  implements Serializable {
         this.type = type;
     }
 
-    public DataContainer getData() {
+    public DataMySql getData() {
         return data;
     }
 
-    public void setData(DataContainer data) {
+    public void setData(DataMySql data) {
         this.data = data;
     }
-
-
 }

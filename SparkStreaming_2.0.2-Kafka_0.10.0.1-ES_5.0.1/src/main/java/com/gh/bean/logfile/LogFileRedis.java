@@ -1,11 +1,13 @@
 package com.gh.bean.logfile;
 
+import java.io.Serializable;
+
 /**
  * Created by GH-GAN on 2016/11/24.
  */
-public class LogFileApp {
+public class LogFileRedis  implements Serializable {
     String type;
-    DataApp data;
+    DataRedis data;
 
     public String getType() {
         return type;
@@ -15,13 +17,11 @@ public class LogFileApp {
         this.type = type;
     }
 
-    public DataApp getData() {
+    public DataRedis getData() {
         return data;
     }
 
-    public void setData(DataApp data) {
+    public void setData(DataRedis data) {
         this.data = data;
     }
-
-
 }

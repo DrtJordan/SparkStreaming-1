@@ -1,10 +1,12 @@
 package com.gh;
 
-import com.gh.bean.AlertDataInfo;
+import com.gh.bean.alert.AlertDataInfo;
+import com.gh.bean.alert.KeyValue;
 import com.gh.bean.appcapability.AppMySql;
 import com.gh.bean.appcapability.AppMySqlData;
 import com.gh.bean.logfile.*;
 import com.gh.utils.DateUtil;
+import com.gh.utils.HttpUtil;
 import com.gh.utils.JsonUtil;
 import org.junit.Test;
 
@@ -90,12 +92,12 @@ public class UtilTest {
 				"    }" +
 				"}";
 
-		LogFileApp bean = JsonUtil.getBean(json, LogFileApp.class);
+		LogFileMySql bean = JsonUtil.getBean(json, LogFileMySql.class);
 		System.out.println(bean.getData().getLog_info().getLog_time());
 		bean.getData().getLog_info().setLog_time("2016-11-20T00:00:10.134Z");
 		String s = JsonUtil.formatJson(bean);
 		System.out.println(s);
-		LogFileApp bean1 = JsonUtil.getBean(s, LogFileApp.class);
+		LogFileMySql bean1 = JsonUtil.getBean(s, LogFileMySql.class);
 		System.out.println(bean1.getData().getLog_info().getLog_time());
 	}
 
@@ -169,10 +171,12 @@ public class UtilTest {
 		warn.setContainer_uuid("dafasdf-123141");
 		warn.setStart_time("2016-11-20 10:10:10.134");
 		warn.setEnd_time("2016-11-20 10:10:10.134");
-		Map<String,Object> datas = new HashMap<String, Object>();
-		datas.put("p_key","cpu");
-		datas.put("p_value",81);
-		warn.setData(datas);
+		ArrayList<KeyValue> list = new ArrayList<KeyValue>();
+		KeyValue kv = new KeyValue();
+		kv.setP_key("thread_connected_max_connections");
+		kv.setP_value("d");
+		list.add(kv);
+		warn.setData(list);
 
 		String s = JsonUtil.formatJson(warn);
 		System.out.println(s);
@@ -181,7 +185,7 @@ public class UtilTest {
 
 	@Test
 	public void test7() throws Exception {
-
+		HttpUtil.Post("hello");
 	}
 	
 }

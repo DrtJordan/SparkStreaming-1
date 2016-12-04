@@ -1,9 +1,11 @@
 package com.gh.bean.logfile;
 
+import java.io.Serializable;
+
 /**
  * Created by GH-GAN on 2016/11/24.
  */
-public class LogInfoApp {
+public class LogInfoMySql  implements Serializable {
     String log_time;
     String warn_type;
     String message;

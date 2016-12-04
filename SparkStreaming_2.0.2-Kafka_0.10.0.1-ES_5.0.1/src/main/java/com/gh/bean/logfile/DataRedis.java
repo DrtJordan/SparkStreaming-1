@@ -5,11 +5,20 @@ import java.io.Serializable;
 /**
  * Created by GH-GAN on 2016/11/24.
  */
-public class DataContainer  implements Serializable {
+public class DataRedis  implements Serializable {
     String container_uuid;
     String environment_id;
+    String app_file;
     String timestamp;
-    LogInfoContainer log_info;
+    LogInfoRedis log_info;
+
+    public String getApp_file() {
+        return app_file;
+    }
+
+    public void setApp_file(String app_file) {
+        this.app_file = app_file;
+    }
 
     public String getContainer_uuid() {
         return container_uuid;
@@ -35,12 +44,11 @@ public class DataContainer  implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public LogInfoContainer getLog_info() {
+    public LogInfoRedis getLog_info() {
         return log_info;
     }
 
-    public void setLog_info(LogInfoContainer log_info) {
+    public void setLog_info(LogInfoRedis log_info) {
         this.log_info = log_info;
     }
-
 }

@@ -1,21 +1,25 @@
-package com.gh.bean;
+package com.gh.bean.alert;
 
+
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
  * Created by GH-GAN on 2016/11/25.
  */
-public class AlertDataInfo {
+public class AlertDataInfo implements Serializable {
     String status;
     String alert_type;
     String alert_dim;
     String app_type;
     String msg;
     String environment_id;
+    String namespace;
     String container_uuid;
     String start_time;
     String end_time;
-    Map<String,Object> data;
+    ArrayList<KeyValue> data;
 
     public String getStatus() {
         return status;
@@ -89,11 +93,19 @@ public class AlertDataInfo {
         this.end_time = end_time;
     }
 
-    public Map<String, Object> getData() {
+    public ArrayList<KeyValue> getData() {
         return data;
     }
 
-    public void setData(Map<String, Object> data) {
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
+    public void setData(ArrayList<KeyValue> data) {
         this.data = data;
     }
 }

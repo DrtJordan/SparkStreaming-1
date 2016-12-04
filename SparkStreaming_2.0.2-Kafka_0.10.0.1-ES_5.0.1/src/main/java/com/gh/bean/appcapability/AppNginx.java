@@ -1,13 +1,13 @@
-package com.gh.bean.logfile;
+package com.gh.bean.appcapability;
 
 import java.io.Serializable;
 
 /**
- * Created by GH-GAN on 2016/11/24.
+ * Created by GH-GAN on 2016/11/25.
  */
-public class LogFileContainer  implements Serializable {
+public class AppNginx  implements Serializable {
     String type;
-    DataContainer data;
+    AppNginxData data;
 
     public String getType() {
         return type;
@@ -17,13 +17,11 @@ public class LogFileContainer  implements Serializable {
         this.type = type;
     }
 
-    public DataContainer getData() {
+    public AppNginxData getData() {
         return data;
     }
 
-    public void setData(DataContainer data) {
+    public void setData(AppNginxData data) {
         this.data = data;
     }
-
-
 }

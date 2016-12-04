@@ -1,9 +1,11 @@
 package com.gh.bean.appcapability;
 
+import java.io.Serializable;
+
 /**
  * Created by GH-GAN on 2016/11/29.
  */
-public class AppMysqlStats {
+public class AppMysqlStats  implements Serializable {
     String timestamp;
     Double used_connection;
     Double query_per_second;

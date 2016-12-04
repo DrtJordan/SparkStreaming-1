@@ -1,11 +1,12 @@
 package com.gh.bean.appcapability;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by GH-GAN on 2016/11/25.
  */
-public class AppMySqlData {
+public class AppMySqlData  implements Serializable {
     String container_uuid;
     String environment_id;
     ArrayList<AppMysqlStats> stats;
