@@ -5,9 +5,9 @@ import java.io.Serializable;
 /**
  * Created by GH-GAN on 2016/11/25.
  */
-public class AppRedis  implements Serializable {
+public class AppRedis2 implements Serializable {
     String type;
-    AppRedisData data;
+    AppRedisData2 data;
 
     public String getType() {
         return type;
@@ -17,11 +17,11 @@ public class AppRedis  implements Serializable {
         this.type = type;
     }
 
-    public AppRedisData getData() {
+    public AppRedisData2 getData() {
         return data;
     }
 
-    public void setData(AppRedisData data) {
+    public void setData(AppRedisData2 data) {
         this.data = data;
     }
 }

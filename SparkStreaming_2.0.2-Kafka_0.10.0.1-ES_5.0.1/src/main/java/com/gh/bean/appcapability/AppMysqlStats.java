@@ -7,11 +7,11 @@ import java.io.Serializable;
  */
 public class AppMysqlStats  implements Serializable {
     String timestamp;
-    Double used_connection;
-    Double query_per_second;
-    Double insert_per_second;
-    Double update_per_second;
-    Double delete_per_second;
+    Double connections_total;
+    Double command_query_total;
+    Double command_insert_total;
+    Double command_update_total;
+    Double command_delete_total;
     Double commands_total;
     Double handlers_total;
     Double connection_errors_total;
@@ -42,44 +42,44 @@ public class AppMysqlStats  implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public Double getUsed_connection() {
-        return used_connection;
+    public Double getConnections_total() {
+        return connections_total;
     }
 
-    public void setUsed_connection(Double used_connection) {
-        this.used_connection = used_connection;
+    public void setConnections_total(Double connections_total) {
+        this.connections_total = connections_total;
     }
 
-    public Double getQuery_per_second() {
-        return query_per_second;
+    public Double getCommand_query_total() {
+        return command_query_total;
     }
 
-    public void setQuery_per_second(Double query_per_second) {
-        this.query_per_second = query_per_second;
+    public void setCommand_query_total(Double command_query_total) {
+        this.command_query_total = command_query_total;
     }
 
-    public Double getInsert_per_second() {
-        return insert_per_second;
+    public Double getCommand_insert_total() {
+        return command_insert_total;
     }
 
-    public void setInsert_per_second(Double insert_per_second) {
-        this.insert_per_second = insert_per_second;
+    public void setCommand_insert_total(Double command_insert_total) {
+        this.command_insert_total = command_insert_total;
     }
 
-    public Double getUpdate_per_second() {
-        return update_per_second;
+    public Double getCommand_update_total() {
+        return command_update_total;
     }
 
-    public void setUpdate_per_second(Double update_per_second) {
-        this.update_per_second = update_per_second;
+    public void setCommand_update_total(Double command_update_total) {
+        this.command_update_total = command_update_total;
     }
 
-    public Double getDelete_per_second() {
-        return delete_per_second;
+    public Double getCommand_delete_total() {
+        return command_delete_total;
     }
 
-    public void setDelete_per_second(Double delete_per_second) {
-        this.delete_per_second = delete_per_second;
+    public void setCommand_delete_total(Double command_delete_total) {
+        this.command_delete_total = command_delete_total;
     }
 
     public Double getCommands_total() {

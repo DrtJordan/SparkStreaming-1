@@ -1,29 +1,26 @@
 package com.gh.yun
 
-import java.{lang, util}
+import java.util
 
-import com.gh.bean.alert.{KeyValue, AlertDataInfo, AlertData}
+import com.gh.bean.alert.KeyValue
 import com.gh.utils._
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.log4j.{Logger, Level}
+import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkConf
-import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.dstream.{DStream, InputDStream}
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010._
 import org.codehaus.jackson.JsonNode
-import org.codehaus.jackson.node.NullNode
 
-import scala.collection.immutable.HashMap
 import scala.collection.mutable.ArrayBuffer
 
 /**
   * Created by GH-GAN on 2016/11/24.
   */
-object AppMysqlCap {
+object AppNginxCap {
   def main(args: Array[String]) {
    /* if (args.length < 4) {
       System.err.println("Usage: Kafka <zkQuorum> <group> <topics> <numThreads>")
@@ -31,13 +28,13 @@ object AppMysqlCap {
     }*/
     Logger.getRootLogger.setLevel(Level.WARN)
 
-    val sparkConf = new SparkConf().setAppName("capability-mysql").setMaster(ConfigUtil.sparkmaster)
+    val sparkConf = new SparkConf().setAppName("capability-nginx").setMaster(ConfigUtil.sparkmaster)
     val ssc = new StreamingContext(sparkConf, Seconds(ConfigUtil.capStreamtime))
-    ssc.checkpoint(ConfigUtil.mysqlCapcheckpoint)
+    ssc.checkpoint(ConfigUtil.nginxCapcheckpoint)
 
     var brokers = ConfigUtil.brokers
-    val _topics = "capability-mysql".split(",").toSet
-    val group = "capability-mysql-js"
+    val _topics = "capability-nginx".split(",").toSet
+    val group = "capability-nginx-js"
 
     val kafkaParams = Map[String, Object](
       "bootstrap.servers" -> brokers,
@@ -58,7 +55,7 @@ object AppMysqlCap {
       Subscribe[String, String](_topics, kafkaParams)
     )
 
-    val datas = parseLog2(stream)
+    val datas = parseLog(stream)
     val mysql_group = datas.groupByKey()
     compute(mysql_group)
 
@@ -67,7 +64,7 @@ object AppMysqlCap {
   }
 
   //一条包含多条记录
-  def parseLog2(stream : InputDStream[ConsumerRecord[String, String]]) : DStream[(String,(String,Double,Double))] ={
+  def parseLog(stream : InputDStream[ConsumerRecord[String, String]]) : DStream[(String,(String,Double,Double))] ={
     val datas = stream.map(line => {
       var node : JsonNode = JsonUtil.getJsonNode(line.value())
       node
@@ -106,32 +103,11 @@ object AppMysqlCap {
       for (i <- 0 to (_stats.size() - 1) ){
         val stats = node.get("data").get("stats").get(i)
         val timestamp = stats.get("timestamp").asText()
-//        println(DateUtil.toBase(timestamp))
-        val thread_connected = stats.get("thread_connected").asDouble()
-        val max_connections = stats.get("max_connections").asDouble()
-        arr.+=((environment_id+"#"+container_uuid+"#"+_type + "#" + container_name + "#" + namespace, (timestamp,thread_connected,max_connections)))
+        val accepts = stats.get("accepts").asDouble()
+        val requests = stats.get("requests").asDouble()
+        arr.+=((environment_id+"#"+container_uuid+"#"+_type + "#" + container_name + "#" + namespace, (timestamp,accepts,requests)))
       }
       arr
-    })
-    datas
-  }
-
-  def parseLog(stream : InputDStream[ConsumerRecord[String, String]]) : DStream[(String,(String,Double,Double))] ={
-    val datas = stream.map(line => {
-      var node : JsonNode = JsonUtil.getJsonNode(line.value())
-      node
-    }).filter(x => (x != null && x.get("type") != null)).map(node => {
-        val _type = node.get("type").asText()
-        val environment_id = node.get("data").get("environment_id").asText()
-        val container_uuid = node.get("data").get("container_uuid").asText()
-
-        val stats = node.get("data").get("stats").get(0)
-
-        val timestamp = stats.get("timestamp").asText()
-        val thread_connected = stats.get("thread_connected").asDouble()
-        val max_connections = stats.get("max_connections").asDouble()
-
-        (environment_id + "#" + container_uuid + "#" + _type, (timestamp,thread_connected,max_connections) )
     })
     datas
   }
@@ -140,22 +116,22 @@ object AppMysqlCap {
       val warn = mysql_group.map(x => {
           val count = x._2.size
 
-          // thread_connected
-          val thread_connected_sum = x._2.map(_._2).reduce(_+_)
-          val thread_connected_avg = thread_connected_sum / count
-
           val start_log = x._2.head
           val end_log = x._2.last
-//          val start_time = DateUtil.df2.format(DateUtil.df_utc_base3.parse(start_log._1))
-//          val end_time = DateUtil.df2.format(DateUtil.df_utc_base3.parse(end_log._1))
           val start_time = start_log._1
           val end_time = end_log._1
-          val max_connections = start_log._3
 
-          // thread_connected_avg / max_connections
-          val con_threshold = thread_connected_avg / max_connections
+          // accepts
+          val accepts_sum = x._2.map(_._2).reduce(_+_)
+          val accepts_avg = accepts_sum / count
 
-          (x._1,start_time,end_time,con_threshold)
+          // requests
+          val requests_sum = x._2.map(_._3).reduce(_+_)
+          val requests_avg = requests_sum / count
+
+          val accept = accepts_avg / requests_avg
+
+          (x._1,start_time,end_time,accept)
       }).map(x => aAlert(x))      // 阈值
         .filter(_._4.size() > 0)  // 是否有告警信息
 
@@ -173,18 +149,16 @@ object AppMysqlCap {
 
   def aAlert(line : (String,String,String,Double)): (String,String,String,util.ArrayList[KeyValue],String) ={
     val list = new util.ArrayList[KeyValue]()
-//    if (line._4 > 0.7) list.add(new KeyValue("connection",line._4.toString))
 
-    val gz = HttpUtil.gz_map.get("app_mysql_connection")
-//    println("===================="+gz.getCondition+gz.getValue)
+    val gz = HttpUtil.gz_map.get("app_nginx_accept")
     gz.getCondition match {
-      case "GTE"  =>   if (line._4 >= gz.getValue) list.add(new KeyValue("connection",line._4.toString))
-      case "GT"   =>   if(line._4 > gz.getValue)   list.add(new KeyValue("connection",line._4.toString))
-      case "LTE"  =>   if(line._4 <= gz.getValue)  list.add(new KeyValue("connection",line._4.toString))
-      case "LT"   =>   if(line._4 < gz.getValue)   list.add(new KeyValue("connection",line._4.toString))
-      case "EQ"   =>   if(line._4 == gz.getValue)  list.add(new KeyValue("connection",line._4.toString))
+      case "GTE"  =>   if(line._4 >= gz.getValue)  list.add(new KeyValue("accept",line._4.toString))
+      case "GT"   =>   if(line._4 > gz.getValue)   list.add(new KeyValue("accept",line._4.toString))
+      case "LTE"  =>   if(line._4 <= gz.getValue)  list.add(new KeyValue("accept",line._4.toString))
+      case "LT"   =>   if(line._4 < gz.getValue)   list.add(new KeyValue("accept",line._4.toString))
+      case "EQ"   =>   if(line._4 == gz.getValue)  list.add(new KeyValue("accept",line._4.toString))
     }
-//    list.add(new KeyValue("connection",line._4.toString))
+
     (line._1,line._2,line._3,list,"")
   }
 

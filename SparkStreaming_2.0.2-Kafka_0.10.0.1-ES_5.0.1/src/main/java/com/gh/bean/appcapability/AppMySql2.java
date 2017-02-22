@@ -5,9 +5,9 @@ import java.io.Serializable;
 /**
  * Created by GH-GAN on 2016/11/25.
  */
-public class AppRedis  implements Serializable {
+public class AppMySql2 implements Serializable {
     String type;
-    AppRedisData data;
+    AppMySqlData2 data;
 
     public String getType() {
         return type;
@@ -17,11 +17,11 @@ public class AppRedis  implements Serializable {
         this.type = type;
     }
 
-    public AppRedisData getData() {
+    public AppMySqlData2 getData() {
         return data;
     }
 
-    public void setData(AppRedisData data) {
+    public void setData(AppMySqlData2 data) {
         this.data = data;
     }
 }

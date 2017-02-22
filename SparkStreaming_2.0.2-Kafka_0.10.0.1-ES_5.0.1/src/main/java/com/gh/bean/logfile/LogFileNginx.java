@@ -1,5 +1,7 @@
 package com.gh.bean.logfile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 /**
@@ -7,7 +9,17 @@ import java.io.Serializable;
  */
 public class LogFileNginx  implements Serializable {
     String type;
+    @JsonIgnore
+    String date;
     DataNginx data;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getType() {
         return type;

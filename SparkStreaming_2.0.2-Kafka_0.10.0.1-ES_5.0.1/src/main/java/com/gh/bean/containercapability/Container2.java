@@ -1,13 +1,13 @@
-package com.gh.bean.appcapability;
+package com.gh.bean.containercapability;
 
 import java.io.Serializable;
 
 /**
  * Created by GH-GAN on 2016/11/25.
  */
-public class AppRedis  implements Serializable {
+public class Container2 implements Serializable {
     String type;
-    AppRedisData data;
+    ContainerData2 data;
 
     public String getType() {
         return type;
@@ -17,11 +17,11 @@ public class AppRedis  implements Serializable {
         this.type = type;
     }
 
-    public AppRedisData getData() {
+    public ContainerData2 getData() {
         return data;
     }
 
-    public void setData(AppRedisData data) {
+    public void setData(ContainerData2 data) {
         this.data = data;
     }
 }

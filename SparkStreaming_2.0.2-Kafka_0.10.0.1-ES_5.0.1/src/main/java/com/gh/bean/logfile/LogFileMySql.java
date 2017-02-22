@@ -1,5 +1,9 @@
 package com.gh.bean.logfile;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
 /**
@@ -7,7 +11,15 @@ import java.io.Serializable;
  */
 public class LogFileMySql  implements Serializable {
     String type;
+    @JsonIgnore
+    String date = "";
     DataMySql data;
+    public String getDate() {
+        return date;
+    }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public String getType() {
         return type;

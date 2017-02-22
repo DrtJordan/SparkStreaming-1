@@ -1,18 +1,18 @@
-package com.gh.bean.logfile;
+package com.gh.bean.appcapability;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
- * Created by GH-GAN on 2016/11/24.
+ * Created by GH-GAN on 2016/11/25.
  */
-public class DataNginx  implements Serializable {
+public class AppMySqlData2 implements Serializable {
+    String timestamp;
     String container_uuid;
     String environment_id;
     String container_name;
     String namespace;
-    String app_file;
-    String timestamp;
-    LogInfoNginx log_info;
+    AppMysqlStats stats;
 
     public String getContainer_name() {
         return container_name;
@@ -30,12 +30,12 @@ public class DataNginx  implements Serializable {
         this.namespace = namespace;
     }
 
-    public String getApp_file() {
-        return app_file;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setApp_file(String app_file) {
-        this.app_file = app_file;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getContainer_uuid() {
@@ -54,20 +54,11 @@ public class DataNginx  implements Serializable {
         this.environment_id = environment_id;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public AppMysqlStats getStats() {
+        return stats;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setStats(AppMysqlStats stats) {
+        this.stats = stats;
     }
-
-    public LogInfoNginx getLog_info() {
-        return log_info;
-    }
-
-    public void setLog_info(LogInfoNginx log_info) {
-        this.log_info = log_info;
-    }
-
 }

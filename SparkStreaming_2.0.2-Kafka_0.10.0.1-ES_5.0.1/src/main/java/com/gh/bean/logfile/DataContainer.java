@@ -8,11 +8,29 @@ import java.io.Serializable;
 public class DataContainer  implements Serializable {
     String container_uuid;
     String environment_id;
+    String container_name;
+    String namespace;
     String timestamp;
     LogInfoContainer log_info;
 
+    public String getContainer_name() {
+        return container_name;
+    }
+
+    public void setContainer_name(String container_name) {
+        this.container_name = container_name;
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
     public String getContainer_uuid() {
-        return container_uuid;
+        return (null == container_uuid) ? "" : container_uuid;
     }
 
     public void setContainer_uuid(String container_uuid) {
@@ -20,7 +38,7 @@ public class DataContainer  implements Serializable {
     }
 
     public String getEnvironment_id() {
-        return environment_id;
+        return (null == environment_id) ? "" : environment_id;
     }
 
     public void setEnvironment_id(String environment_id) {

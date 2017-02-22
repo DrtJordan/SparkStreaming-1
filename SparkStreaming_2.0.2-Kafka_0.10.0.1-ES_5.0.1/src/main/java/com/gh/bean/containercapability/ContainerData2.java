@@ -1,21 +1,20 @@
-package com.gh.bean.logfile;
+package com.gh.bean.containercapability;
 
 import java.io.Serializable;
 
 /**
- * Created by GH-GAN on 2016/11/24.
+ * Created by GH-GAN on 2016/11/25.
  */
-public class DataNginx  implements Serializable {
+public class ContainerData2 implements Serializable {
+    String timestamp;
     String container_uuid;
     String environment_id;
     String container_name;
     String namespace;
-    String app_file;
-    String timestamp;
-    LogInfoNginx log_info;
+    ContainerStats stats;
 
     public String getContainer_name() {
-        return container_name;
+        return (null == container_name) ? "" :container_name;
     }
 
     public void setContainer_name(String container_name) {
@@ -30,16 +29,16 @@ public class DataNginx  implements Serializable {
         this.namespace = namespace;
     }
 
-    public String getApp_file() {
-        return app_file;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setApp_file(String app_file) {
-        this.app_file = app_file;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getContainer_uuid() {
-        return (null == container_uuid) ? "" : container_uuid;
+        return container_uuid;
     }
 
     public void setContainer_uuid(String container_uuid) {
@@ -54,20 +53,11 @@ public class DataNginx  implements Serializable {
         this.environment_id = environment_id;
     }
 
-    public String getTimestamp() {
-        return timestamp;
+    public ContainerStats getStats() {
+        return stats;
     }
 
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setStats(ContainerStats stats) {
+        this.stats = stats;
     }
-
-    public LogInfoNginx getLog_info() {
-        return log_info;
-    }
-
-    public void setLog_info(LogInfoNginx log_info) {
-        this.log_info = log_info;
-    }
-
 }

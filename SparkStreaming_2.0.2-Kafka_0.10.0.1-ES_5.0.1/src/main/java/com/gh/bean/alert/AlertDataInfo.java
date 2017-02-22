@@ -9,17 +9,26 @@ import java.util.Map;
  * Created by GH-GAN on 2016/11/25.
  */
 public class AlertDataInfo implements Serializable {
-    String status;
-    String alert_type;
-    String alert_dim;
-    String app_type;
-    String msg;
-    String environment_id;
-    String namespace;
-    String container_uuid;
-    String start_time;
-    String end_time;
+    String status = "200";
+    String alert_type = "";
+    String alert_dim = "";
+    String app_type = "";
+    String msg = "";
+    String environment_id = "123";
+    String container_uuid = "";
+    String container_name = "";
+    String namespace = "";
+    String start_time = "";
+    String end_time = "";
     ArrayList<KeyValue> data;
+
+    public String getContainer_name() {
+        return container_name;
+    }
+
+    public void setContainer_name(String container_name) {
+        this.container_name = container_name;
+    }
 
     public String getStatus() {
         return status;

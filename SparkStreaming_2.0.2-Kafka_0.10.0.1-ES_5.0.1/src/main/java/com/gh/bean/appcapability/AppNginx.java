@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by GH-GAN on 2016/11/25.
  */
 public class AppNginx  implements Serializable {
-    String type;
+    String type = "";
     AppNginxData data;
 
     public String getType() {
